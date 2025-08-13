@@ -1,8 +1,11 @@
 package ru.netology.stellarburgers.tests;
 
 import io.qameta.allure.*;
+import org.junit.After;
 import org.junit.Test;
+import ru.netology.stellarburgers.api.UserApiClient;
 import ru.netology.stellarburgers.base.BaseTest;
+import ru.netology.stellarburgers.model.User;
 import ru.netology.stellarburgers.pages.MainPage;
 import ru.netology.stellarburgers.pages.RegisterPage;
 import ru.netology.stellarburgers.utils.TestDataGenerator;
@@ -16,11 +19,21 @@ import static org.junit.Assert.*;
 @Feature("Регистрация пользователей")
 public class RegistrationTest extends BaseTest {
     
+    private String createdUserToken;
+    
+    @After
+    public void tearDown() {
+        // Удаляем созданного пользователя через API
+        if (createdUserToken != null) {
+            UserApiClient.deleteUser(createdUserToken);
+        }
+    }
+    
     @Test
-    @Description("Проверка успешной регистрации с валидными данными")
+    @Description("Успешная регистрация с валидными данными")
     @Severity(SeverityLevel.CRITICAL)
     public void testSuccessfulRegistration() {
-        // Генерируем тестовые данные
+        // Генерируем тестовые данные с помощью DataFaker
         String name = TestDataGenerator.generateRandomName();
         String email = TestDataGenerator.generateRandomEmail();
         String password = TestDataGenerator.generateValidPassword();
@@ -35,13 +48,16 @@ public class RegistrationTest extends BaseTest {
         // Проверяем, что произошел переход на /login
         assertTrue("После успешной регистрации должен быть переход на страницу входа",
                 driver.getCurrentUrl().contains("/login"));
+        
+        // Получаем токен для удаления пользователя
+        createdUserToken = UserApiClient.loginUser(email, password);
     }
     
     @Test
-    @Description("Проверка отображения ошибки при вводе пароля менее 6 символов")
+    @Description("Регистрация с паролем менее 6 символов показывает ошибку")
     @Severity(SeverityLevel.NORMAL)
     public void testRegistrationWithInvalidPassword() {
-        // Генерируем тестовые данные
+        // Генерируем тестовые данные с помощью DataFaker
         String name = TestDataGenerator.generateRandomName();
         String email = TestDataGenerator.generateRandomEmail();
         String invalidPassword = TestDataGenerator.generateInvalidPassword(); // менее 6 символов
@@ -63,7 +79,7 @@ public class RegistrationTest extends BaseTest {
     }
     
     @Test
-    @Description("Проверка работы ссылки 'Войти' на странице регистрации")
+    @Description("Навигация с регистрации на вход работает корректно")
     @Severity(SeverityLevel.MINOR)
     public void testNavigationToLoginFromRegistration() {
         // Переходим на страницу регистрации

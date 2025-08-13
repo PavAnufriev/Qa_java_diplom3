@@ -1,54 +1,53 @@
 package ru.netology.stellarburgers.utils;
 
-import java.util.Random;
+import com.github.javafaker.Faker;
 
 /**
- * Утилитный класс для генерации тестовых данных
+ * Утилитный класс для генерации тестовых данных с использованием JavaFaker
  */
 public class TestDataGenerator {
     
-    private static final Random random = new Random();
+    private static final Faker faker = new Faker();
     
     /**
      * Генерирует случайный email
      */
     public static String generateRandomEmail() {
-        return "test" + System.currentTimeMillis() + "@yandex.ru";
+        return faker.internet().emailAddress();
     }
     
     /**
      * Генерирует случайное имя
      */
     public static String generateRandomName() {
-        String[] names = {"Иван", "Петр", "Сидор", "Анна", "Мария", "Ольга"};
-        return names[random.nextInt(names.length)] + random.nextInt(1000);
+        return faker.name().firstName();
     }
     
     /**
      * Генерирует случайный пароль заданной длины
      */
     public static String generateRandomPassword(int length) {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder password = new StringBuilder();
-        
-        for (int i = 0; i < length; i++) {
-            password.append(chars.charAt(random.nextInt(chars.length())));
-        }
-        
-        return password.toString();
+        return faker.internet().password(length, length, true, true, true);
     }
     
     /**
      * Генерирует валидный пароль (6+ символов)
      */
     public static String generateValidPassword() {
-        return generateRandomPassword(8);
+        return faker.internet().password(8, 20, true, true, true);
     }
     
     /**
      * Генерирует невалидный пароль (менее 6 символов)
      */
     public static String generateInvalidPassword() {
-        return generateRandomPassword(5);
+        return faker.internet().password(1, 5, true, true, true);
+    }
+    
+    /**
+     * Генерирует невалидный email для негативных тестов
+     */
+    public static String generateInvalidEmail() {
+        return faker.lorem().word();
     }
 }

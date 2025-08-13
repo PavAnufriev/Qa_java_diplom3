@@ -1,9 +1,12 @@
 package ru.netology.stellarburgers.tests;
 
 import io.qameta.allure.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.netology.stellarburgers.api.UserApiClient;
 import ru.netology.stellarburgers.base.BaseTest;
+import ru.netology.stellarburgers.model.User;
 import ru.netology.stellarburgers.pages.MainPage;
 import ru.netology.stellarburgers.pages.LoginPage;
 import ru.netology.stellarburgers.pages.RegisterPage;
@@ -22,25 +25,32 @@ public class LoginTest extends BaseTest {
     private String testEmail;
     private String testPassword;
     private String testName;
+    private String userToken;
     
     @Before
     public void prepareTestUser() {
-        // Создаем тестового пользователя для каждого теста
+        // Создаем тестового пользователя через API с данными из DataFaker
         testName = TestDataGenerator.generateRandomName();
         testEmail = TestDataGenerator.generateRandomEmail();
         testPassword = TestDataGenerator.generateValidPassword();
         
-        // Регистрируем пользователя
-        MainPage mainPage = new MainPage(driver);
-        RegisterPage registerPage = mainPage.clickLoginButton().clickRegisterLink();
-        registerPage.register(testName, testEmail, testPassword);
+        User user = new User(testEmail, testPassword, testName);
+        userToken = UserApiClient.createUser(user);
         
         // Возвращаемся на главную страницу
         driver.get(BASE_URL);
     }
     
+    @After
+    public void tearDown() {
+        // Удаляем созданного пользователя через API
+        if (userToken != null) {
+            UserApiClient.deleteUser(userToken);
+        }
+    }
+    
     @Test
-    @Description("Проверка входа пользователя через основную кнопку входа")
+    @Description("Вход через основную кнопку входа работает корректно")
     @Severity(SeverityLevel.CRITICAL)
     public void testLoginViaMainLoginButton() {
         MainPage mainPage = new MainPage(driver);
@@ -54,7 +64,7 @@ public class LoginTest extends BaseTest {
     }
     
     @Test
-    @Description("Проверка входа пользователя через кнопку 'Личный кабинет'")
+    @Description("Вход через кнопку 'Личный кабинет' работает корректно")
     @Severity(SeverityLevel.CRITICAL)
     public void testLoginViaPersonalAccountButton() {
         MainPage mainPage = new MainPage(driver);
@@ -67,7 +77,7 @@ public class LoginTest extends BaseTest {
     }
     
     @Test
-    @Description("Проверка входа пользователя через ссылку 'Войти' на странице регистрации")
+    @Description("Вход через ссылку на форме регистрации работает корректно")
     @Severity(SeverityLevel.NORMAL)
     public void testLoginViaRegistrationForm() {
         MainPage mainPage = new MainPage(driver);
@@ -81,7 +91,7 @@ public class LoginTest extends BaseTest {
     }
     
     @Test
-    @Description("Проверка входа пользователя через ссылку 'Войти' на странице восстановления пароля")
+    @Description("Вход через ссылку на форме восстановления пароля работает корректно")
     @Severity(SeverityLevel.NORMAL)
     public void testLoginViaForgotPasswordForm() {
         MainPage mainPage = new MainPage(driver);
@@ -96,15 +106,15 @@ public class LoginTest extends BaseTest {
     }
     
     @Test
-    @Description("Проверка отображения ошибки при вводе неверных учетных данных")
+    @Description("Неверные учетные данные показывают ошибку")
     @Severity(SeverityLevel.NORMAL)
     public void testLoginWithInvalidCredentials() {
         MainPage mainPage = new MainPage(driver);
         LoginPage loginPage = mainPage.clickLoginButton();
         
-        // Пытаемся войти с неверными данными
-        String invalidEmail = "invalid@example.com";
-        String invalidPassword = "wrongpassword";
+        // Пытаемся войти с неверными данными, сгенерированными DataFaker
+        String invalidEmail = TestDataGenerator.generateRandomEmail();
+        String invalidPassword = TestDataGenerator.generateValidPassword();
         
         loginPage.enterEmail(invalidEmail);
         loginPage.enterPassword(invalidPassword);

@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class ConstructorTest extends BaseTest {
     
     @Test
-    @Description("Проверка работы перехода к разделу 'Булки' в конструкторе")
+    @Description("Переход к разделу 'Булки' работает корректно")
     @Severity(SeverityLevel.NORMAL)
     public void testNavigationToBunsSection() {
         MainPage mainPage = new MainPage(driver);
@@ -32,7 +32,7 @@ public class ConstructorTest extends BaseTest {
     }
     
     @Test
-    @Description("Проверка работы перехода к разделу 'Соусы' в конструкторе")
+    @Description("Переход к разделу 'Соусы' работает корректно")
     @Severity(SeverityLevel.NORMAL)
     public void testNavigationToSaucesSection() {
         MainPage mainPage = new MainPage(driver);
@@ -46,7 +46,7 @@ public class ConstructorTest extends BaseTest {
     }
     
     @Test
-    @Description("Проверка работы перехода к разделу 'Начинки' в конструкторе")
+    @Description("Переход к разделу 'Начинки' работает корректно")
     @Severity(SeverityLevel.NORMAL)
     public void testNavigationToFillingsSection() {
         MainPage mainPage = new MainPage(driver);
@@ -60,7 +60,7 @@ public class ConstructorTest extends BaseTest {
     }
     
     @Test
-    @Description("Проверка работы переключения между всеми разделами конструктора")
+    @Description("Переключение между всеми разделами конструктора работает корректно")
     @Severity(SeverityLevel.NORMAL)
     public void testSectionSwitching() {
         MainPage mainPage = new MainPage(driver);
