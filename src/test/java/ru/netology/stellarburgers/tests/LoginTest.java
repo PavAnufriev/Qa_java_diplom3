@@ -41,6 +41,7 @@ public class LoginTest extends BaseTest {
         driver.get(BASE_URL);
     }
     
+    @Override
     @After
     public void tearDown() {
         // Удаляем созданного пользователя через API

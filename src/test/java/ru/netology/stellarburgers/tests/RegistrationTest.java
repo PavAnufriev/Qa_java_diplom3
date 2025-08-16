@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Test;
 import ru.netology.stellarburgers.api.UserApiClient;
 import ru.netology.stellarburgers.base.BaseTest;
-import ru.netology.stellarburgers.model.User;
 import ru.netology.stellarburgers.pages.MainPage;
 import ru.netology.stellarburgers.pages.RegisterPage;
 import ru.netology.stellarburgers.utils.TestDataGenerator;
@@ -21,6 +20,7 @@ public class RegistrationTest extends BaseTest {
     
     private String createdUserToken;
     
+    @Override
     @After
     public void tearDown() {
         // Удаляем созданного пользователя через API
